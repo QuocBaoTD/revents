@@ -4,6 +4,7 @@ export type AppEvent = {
   date: string;
   description: string;
   city: string;
+  category: string;
   venue: string;
   hostedBy: string;
   hostPhotoURL: string;
