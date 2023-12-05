@@ -1,22 +1,10 @@
 import { ChangeEvent, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button, Form, Header, Segment } from "semantic-ui-react";
-import { AppEvent } from "../../App/types/events";
-import { createId } from "@paralleldrive/cuid2";
+// import { createId } from "@paralleldrive/cuid2";
 
-type Props = {
-  setFormOpen: (value: boolean) => void;
-  onAddNewEvent: (event: AppEvent) => void;
-  selectedEvent: AppEvent | null;
-  onUpdateEvent: (event: AppEvent) => void;
-};
-
-export default function EventForm({
-  setFormOpen,
-  onAddNewEvent,
-  selectedEvent,
-  onUpdateEvent,
-}: Props) {
-  const initialValues = selectedEvent ?? {
+export default function EventForm() {
+  const initialValues = {
     title: "",
     category: "",
     description: "",
@@ -28,6 +16,8 @@ export default function EventForm({
   const [values, setValues] = useState(initialValues);
 
   function onSubmit() {
+    console.log(values);
+    /*
     selectedEvent
       ? onUpdateEvent({ ...selectedEvent, ...values }) // check selectedEvent if have event so we can update if not we need to create new event.
       : // crypto.randomUUID() use to create random id
@@ -40,6 +30,7 @@ export default function EventForm({
         });
     setValues(initialValues);
     setFormOpen(false);
+    */
   }
 
   function handleInPutChange(e: ChangeEvent<HTMLInputElement>) {
@@ -53,7 +44,7 @@ export default function EventForm({
 
   return (
     <Segment clearing>
-      <Header content={selectedEvent ? "Update Event" : "Create Event"} />
+      <Header content={"Create Event"} />
       <Form onSubmit={onSubmit}>
         <Form.Field>
           <input
@@ -115,7 +106,8 @@ export default function EventForm({
           type="button"
           floated="right"
           content="Cancel"
-          onClick={() => setFormOpen(false)}
+          as={Link}
+          to="/events"
         />
       </Form>
     </Segment>
