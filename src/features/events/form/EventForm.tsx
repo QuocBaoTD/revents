@@ -1,10 +1,19 @@
 import { ChangeEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Form, Header, Segment } from "semantic-ui-react";
-// import { createId } from "@paralleldrive/cuid2";
+import { useAppDispatch, useAppSelector } from "../../../App/store/store";
+import { createId } from "@paralleldrive/cuid2";
+import { createEvent, updateEvent } from "../eventSlice";
 
 export default function EventForm() {
-  const initialValues = {
+  let { id } = useParams();
+  const event = useAppSelector((state) =>
+    state.events.events.find((event) => event.id === id)
+  );
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const initialValues = event ?? {
     title: "",
     category: "",
     description: "",
@@ -16,21 +25,20 @@ export default function EventForm() {
   const [values, setValues] = useState(initialValues);
 
   function onSubmit() {
-    console.log(values);
-    /*
-    selectedEvent
-      ? onUpdateEvent({ ...selectedEvent, ...values }) // check selectedEvent if have event so we can update if not we need to create new event.
-      : // crypto.randomUUID() use to create random id
-        onAddNewEvent({
-          ...values,
-          id: createId(),
-          hostedBy: "bod",
-          attendees: [],
-          hostPhotoURL: "",
-        });
-    setValues(initialValues);
-    setFormOpen(false);
-    */
+    id = id ?? createId();
+
+    event
+      ? dispatch(updateEvent({ ...event, ...values }))
+      : dispatch(
+          createEvent({
+            ...values,
+            id,
+            hostedBy: "bod",
+            attendees: [],
+            hostPhotoURL: "",
+          })
+        );
+    navigate(`/events/${id}`);
   }
 
   function handleInPutChange(e: ChangeEvent<HTMLInputElement>) {
@@ -44,7 +52,7 @@ export default function EventForm() {
 
   return (
     <Segment clearing>
-      <Header content={"Create Event"} />
+      <Header content={event ? "Update Event" : "Create Event"} />
       <Form onSubmit={onSubmit}>
         <Form.Field>
           <input

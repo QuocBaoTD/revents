@@ -6,8 +6,13 @@ import {
   Segment,
   SegmentGroup,
 } from "semantic-ui-react";
+import { AppEvent } from "../../../App/types/events";
 
-function EventDetailInfor() {
+type Props = {
+  event: AppEvent;
+};
+
+function EventDetailInfor({ event }: Props) {
   return (
     <SegmentGroup>
       <Segment attached="top">
@@ -16,7 +21,7 @@ function EventDetailInfor() {
             <Icon color="teal" name="info" size="large" />
           </GridColumn>
           <GridColumn width={15}>
-            <p>Event Description</p>
+            <p>{event.description}</p>
           </GridColumn>
         </Grid>
       </Segment>
@@ -27,7 +32,7 @@ function EventDetailInfor() {
             <Icon name="calendar" size="large" color="teal" />
           </Grid.Column>
           <Grid.Column width={15}>
-            <span>Event Date</span>
+            <span>{event.date}</span>
           </Grid.Column>
         </Grid>
       </Segment>
@@ -38,14 +43,13 @@ function EventDetailInfor() {
             <Icon name="marker" size="large" color="teal" />
           </Grid.Column>
           <Grid.Column width={11}>
-            <span>Event Venue</span>
+            <span>{event.venue}</span>
           </Grid.Column>
           <Grid.Column width={4}>
             <Button color="teal" size="tiny" content="Show Map" />
           </Grid.Column>
         </Grid>
       </Segment>
-      
     </SegmentGroup>
   );
 }

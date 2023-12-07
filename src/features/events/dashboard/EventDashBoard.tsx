@@ -1,21 +1,14 @@
 import { Grid, GridColumn } from "semantic-ui-react";
 import EventList from "./EventList";
-import { sampleData } from "../../../App/api/sampleDate";
-import { useEffect, useState } from "react";
-import { AppEvent } from "../../../App/types/events";
-
+import { useAppSelector } from "../../../App/store/store";
 
 function EventDashBoard() {
-  const [events, setEvents] = useState<AppEvent[]>([]);
-
-  useEffect(function () {
-    setEvents(sampleData);
-  }, []);
+  const { events } = useAppSelector((state) => state.events);
 
   return (
     <Grid>
       <GridColumn width={10}>
-        <EventList events={events}/>
+        <EventList events={events} />
       </GridColumn>
       <GridColumn width={6}>
         <h2>Filters</h2>

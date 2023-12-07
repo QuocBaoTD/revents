@@ -17,7 +17,7 @@ export default function NavBar() {
             as={NavLink}
             to="/"
           >
-            <img src="logo.png" alt="logo" />
+            <img src="/logo.png" alt="logo" />
             Revents
           </MenuItem>
 
@@ -25,9 +25,14 @@ export default function NavBar() {
             style={{ color: "white" }}
             name="Events"
             as={NavLink}
-            to="events"
+            to="/events"
           />
-
+          <MenuItem
+            name="Scratch"
+            as={NavLink}
+            to="/scratch"
+            style={{ color: "white" }}
+          />
           <MenuItem name="re-events">
             <Button
               as={NavLink}
@@ -38,7 +43,11 @@ export default function NavBar() {
               content="Create event"
             />
           </MenuItem>
-          {auth ? <SignInMenu  setAuth={setAuth}/> : <SignOutButton  setAuth={setAuth}/>}
+          {auth ? (
+            <SignInMenu setAuth={setAuth} />
+          ) : (
+            <SignOutButton setAuth={setAuth} />
+          )}
         </Container>
       </Menu>
     </div>

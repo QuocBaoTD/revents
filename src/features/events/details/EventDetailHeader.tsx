@@ -9,37 +9,46 @@ import {
   Segment,
   SegmentGroup,
 } from "semantic-ui-react";
+import { AppEvent } from "../../../App/types/events";
 
-function EventDetailHeader() {
+type Props = {
+  event: AppEvent;
+};
+
+function EventDetailHeader({ event }: Props) {
   const styledEventImage = {
-    filter: "brightness(30%)"
-  }
+    filter: "brightness(30%)",
+  };
 
-  const styledEventText ={
-    position: 'absolute',
+  const styledEventText = {
+    position: "absolute",
     bottom: "5%",
-    left: '5%',
-    width: '100%',
+    left: "5%",
+    width: "100%",
     height: "auto",
-    color: "White"
-  }
+    color: "White",
+  };
 
   return (
     <SegmentGroup>
       <Segment basic attached="top" styled={{ padding: "0" }}>
-        <Image src={`/public/categoryImages/drinks.jpg`} fluid style={styledEventImage}/>
+        <Image
+          src={`/categoryImages/${event.category}.jpg`}
+          fluid
+          style={styledEventImage}
+        />
         <Segment basic style={styledEventText}>
           <ItemGroup>
             <Item>
               <ItemContent>
                 <Header
                   size="huge"
-                  content="Event Title"
+                  content={event.title}
                   style={{ color: "White" }}
                 />
-                <p>Event Date</p>
+                <p>{event.date}</p>
                 <p>
-                  Hosted by <strong>Bod</strong>
+                  Hosted by <strong>{event.hostedBy}</strong>
                 </p>
               </ItemContent>
             </Item>
@@ -50,7 +59,7 @@ function EventDetailHeader() {
       <Segment attached="bottom">
         <Button>Cancel My Place</Button>
         <Button color="teal">JOIN THIS EVENT</Button>
-        <Button color="orange" floated="right" as={Link} to={`/manage/abc`}>
+        <Button color="orange" floated="right" as={Link} to={`/manage/${event.id}`}>
           Manage Event
         </Button>
       </Segment>
