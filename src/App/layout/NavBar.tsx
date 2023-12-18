@@ -2,10 +2,22 @@ import { NavLink } from "react-router-dom";
 import { Button, Container, Menu, MenuItem } from "semantic-ui-react";
 import SignOutButton from "./nav/SignOutButton";
 import SignInMenu from "./nav/SignInMenu";
-import { useState } from "react";
+import { useAppSelector } from "../store/store";
+import { sampleData } from "../api/sampleDate";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 export default function NavBar() {
-  const [auth, setAuth] = useState(false);
+  const { authenticated } = useAppSelector((state) => state.auth);
+
+  function seedData() {
+    sampleData.forEach(async (event) => {
+      const { id, ...rest } = event;
+      await setDoc(doc(db, "events", id), {
+        ...rest,
+      });
+    });
+  }
 
   return (
     <div>
@@ -43,11 +55,15 @@ export default function NavBar() {
               content="Create event"
             />
           </MenuItem>
-          {auth ? (
-            <SignInMenu setAuth={setAuth} />
-          ) : (
-            <SignOutButton setAuth={setAuth} />
-          )}
+          {import.meta.env.DEV && (<MenuItem>
+           <Button 
+            inverted={true}
+            color="teal"
+            content='Seed Data'
+            onClick={seedData}
+           />
+          </MenuItem>)}
+          {authenticated ? <SignInMenu /> : <SignOutButton />}
         </Container>
       </Menu>
     </div>

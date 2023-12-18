@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/createEvent",
-        element: <EventForm />,
+        element: <EventForm key="createEvent"/>,
       },
       {
         path: "/scratch",

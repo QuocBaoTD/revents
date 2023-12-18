@@ -5,6 +5,7 @@ import {
   ItemContent,
   ItemDescription,
   ItemGroup,
+  Label,
   List,
   Segment,
   SegmentGroup,
@@ -12,15 +13,17 @@ import {
 import EventListAttendee from "./EventListAttendee";
 import { AppEvent } from "../../../App/types/events";
 import { Link } from "react-router-dom";
-import { useAppDispatch } from "../../../App/store/store";
-import { deleteEvent } from "../eventSlice";
+import { useAppSelector } from "../../../App/store/store";
+import Spinner from "../../../App/layout/Spinner";
 
 type Props = {
   event: AppEvent;
 };
 
 export default function EventListItem({ event }: Props) {
-  const dispatch = useAppDispatch();
+  const { status } = useAppSelector((state) => state.events);
+
+  if (status === "loading") return <Spinner />;
 
   return (
     <SegmentGroup>
@@ -36,6 +39,10 @@ export default function EventListItem({ event }: Props) {
             <ItemContent>
               <Item.Header>{event.title}</Item.Header>
               <ItemDescription>Hosted by {event.hostedBy}</ItemDescription>
+              
+              {event.isCancelled && (
+                <Label style={{ top: "-40px" }} ribbon="right" color="red" content="This event has been cancelled" /> //announce event is cancelled
+              )}
             </ItemContent>
           </Item>
         </ItemGroup>
@@ -58,8 +65,19 @@ export default function EventListItem({ event }: Props) {
       </Segment>
       <Segment clearing>
         <span>{event.description}</span>
-        <Button color="teal" floated="right" content="view"  as={Link} to={`/events/${event.id}`}/>
-        <Button color="red" floated="right" content="Delete" onClick={() => dispatch(deleteEvent(event.id))}/>
+        <Button
+          color="teal"
+          floated="right"
+          content="view"
+          as={Link}
+          to={`/events/${event.id}`}
+        />
+        <Button
+          color="red"
+          floated="right"
+          content="Delete"
+          //adding fucntion remove of useFireStore hook.
+        />
       </Segment>
     </SegmentGroup>
   );
