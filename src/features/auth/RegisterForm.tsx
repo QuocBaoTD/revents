@@ -1,16 +1,18 @@
-import { Divider, Form, Label } from "semantic-ui-react";
+import { Form, Label } from "semantic-ui-react";
 import ModalWrapper from "../../App/common/modal/ModalWrapper";
 import { FieldValues, useForm } from "react-hook-form";
 import { useAppDispatch } from "../../App/store/store";
 import { closeModal } from "../../App/common/modal/modalSlice";
 import { Button, FormInput } from "semantic-ui-react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../App/config/firebase";
-import SocialLogin from "./SocialLogin";
+import { useFirestore } from "../../App/hooks/firestore/useFirestore";
+import { Timestamp } from "firebase/firestore";
 
 //https://regexlib.com/Search.aspx?k=email to take validation email
 
-function LoginForm() {
+function RegisterForm() {
+  const { set } = useFirestore("profiles");
   const {
     register,
     handleSubmit,
@@ -24,19 +26,39 @@ function LoginForm() {
 
   async function onSubmit(data: FieldValues) {
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
+      const userCreds = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+      await updateProfile(userCreds.user, {
+        displayName: data.displayName,
+      });
+      //Adding new user in database.
+      await set(userCreds.user.uid, {
+        displayName: data.displayName,
+        email: data.email,
+        createdAt: Timestamp.now(),
+      });
       dispatch(closeModal());
     } catch (error: any) {
       setError("root.serverError", {
         type: "400",
-        message: error.message, //handle error
+        message: error.message,
       });
     }
   }
 
   return (
-    <ModalWrapper header="Sign into re-revents" size="tiny">
+    <ModalWrapper header="Register to re-revents">
       <Form onSubmit={handleSubmit(onSubmit)}>
+        <FormInput
+          defaultValue=""
+          placeholder="Display Name"
+          {...register("displayName", { required: true })}
+          error={errors.displayName && "displayName is required"}
+        />
+
         <FormInput
           defaultValue=""
           placeholder="Email address"
@@ -57,6 +79,7 @@ function LoginForm() {
           {...register("password", { required: true })}
           error={errors.password && "Password is required"}
         />
+
         {errors.root && (
           <Label
             basic
@@ -65,7 +88,6 @@ function LoginForm() {
             content={errors.root.serverError.message}
           />
         )}
-
         <Button
           loading={isSubmitting}
           disabled={!isValid || !isDirty || isSubmitting}
@@ -73,14 +95,11 @@ function LoginForm() {
           fluid
           size="large"
           color="teal"
-          content="Login"
+          content="Register"
         />
-
-        <Divider horizontal>Or</Divider>
-        <SocialLogin/>
       </Form>
     </ModalWrapper>
   );
 }
 
-export default LoginForm;
+export default RegisterForm;

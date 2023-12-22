@@ -116,8 +116,17 @@ export function useFirestore<T extends DocumentData>(path: string) {
     } catch (error: any) {
       console.log(error);
       toast.error(error.message);
-    } 
+    }
+  };
+  //Adding new user in database
+  const set = async (id: string, data: any) => {
+    try {
+      return await setDoc(doc(db, path, id), data);
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.message);
+    }
   };
 
-  return { loadCollection, loadDocument, create, update, remove };
+  return { loadCollection, loadDocument, create, update, remove, set };
 }

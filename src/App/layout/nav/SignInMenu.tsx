@@ -1,22 +1,23 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Dropdown, DropdownItem, Image, MenuItem } from "semantic-ui-react";
-import { useAppDispatch, useAppSelector } from "../../store/store";
-import { SignOut } from "../../../features/auth/authSlice";
+import { useAppSelector } from "../../store/store";
+import { signOut } from "firebase/auth";
+import { auth } from "../../config/firebase";
 
 function SignInMenu() {
   const { currentUser } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
+
   const navigate = useNavigate();
 
-  function handleSignOut() {
-    dispatch(SignOut());
+  async function handleSignOut() {
+    await signOut(auth);
     navigate("/");
   }
 
   return (
     <MenuItem position="right">
-      <Image avatar spaced="right" src="/user.png" />
-      <Dropdown pointing="top left" text={currentUser?.email}>
+      <Image avatar spaced="right" src={currentUser?.photoURL || "/user.png"} />
+      <Dropdown pointing="top left" text={currentUser?.displayName as string}>
         <Dropdown.Menu>
           <DropdownItem
             as={Link}
@@ -25,6 +26,12 @@ function SignInMenu() {
             icon="plus"
           />
           <DropdownItem text="My profile" icon="user" />
+          <DropdownItem
+            as={Link}
+            to="/account"
+            text="My account"
+            icon="setting"
+          />
           <DropdownItem onClick={handleSignOut} text="Sign out" icon="power" />
         </Dropdown.Menu>
       </Dropdown>

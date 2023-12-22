@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
-import 'firebase/firestore';
+import "firebase/firestore";
+import "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-
+import { getAuth } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -10,10 +11,11 @@ const firebaseConfig = {
   projectId: "re-events-e6b55",
   storageBucket: "re-events-e6b55.appspot.com",
   messagingSenderId: "698081827147",
-  appId: "1:698081827147:web:ffb345f8349d802229b0ce"
+  appId: "1:698081827147:web:ffb345f8349d802229b0ce",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-export const db = getFirestore(app)
+export const db = getFirestore(app);
+export const auth = getAuth(app);
