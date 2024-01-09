@@ -1,6 +1,12 @@
-import { Item, ItemGroup, Segment } from "semantic-ui-react";
+import { Item, ItemGroup, Label, Segment } from "semantic-ui-react";
+import { AppEvent } from "../../../App/types/events";
+import { Link } from "react-router-dom";
 
-function EventDetailSideBar() {
+type Props = {
+  event: AppEvent;
+};
+
+function EventDetailSideBar({ event }: Props) {
   return (
     <>
       <Segment
@@ -10,27 +16,29 @@ function EventDetailSideBar() {
         secondary
         inverted
         color="teal"
-      >
-        2 people Going
+      > 
+      {event?.attendees?.length} People Going
       </Segment>
       <Segment attached>
-        <ItemGroup>
-          <Item style={{ position: "relative" }}>
-            <Item.Image size="tiny" src="/user.png" />
-            <Item.Content verticalAlign="middle">
-              <Item.Header as="h3">
-                <span>Tom</span>
-              </Item.Header>
-            </Item.Content>
-          </Item>
-          <Item style={{ position: "relative" }}>
-            <Item.Image size="tiny" src="/user.png" />
-            <Item.Content verticalAlign="middle">
-              <Item.Header as="h3">
-                <span>Bob</span>
-              </Item.Header>
-            </Item.Content>
-          </Item>
+        <ItemGroup relaxed divided>
+          {event.attendees.map((attendee) => ( // check how many user attent the event.
+            <Item style={{ position: "relative" }} key={attendee.id}>
+              {event.hostUid === attendee.id && ( // check who is the host
+                <Label
+                  style={{ position: "absolute" }}
+                  color="orange"
+                  ribbon="right"
+                >Host</Label>
+              )}
+
+              <Item.Image size="tiny" src={attendee.photoURL || "/user.png"} />
+              <Item.Content verticalAlign="middle">
+                <Item.Header as={Link} to={`/profiles/${attendee.id}`}>
+                  <span>{attendee.displayName}</span>
+                </Item.Header>
+              </Item.Content>
+            </Item>
+          ))}
         </ItemGroup>
       </Segment>
     </>

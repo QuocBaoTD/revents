@@ -7,6 +7,7 @@ import {
   SegmentGroup,
 } from "semantic-ui-react";
 import { AppEvent } from "../../../App/types/events";
+import { format } from "date-fns";
 
 type Props = {
   event: AppEvent;
@@ -32,7 +33,7 @@ function EventDetailInfor({ event }: Props) {
             <Icon name="calendar" size="large" color="teal" />
           </Grid.Column>
           <Grid.Column width={15}>
-            <span>{event.date}</span>
+            <span>{format(new Date(event.date), "dd/ MM/ yyyy, h:mm a")}</span>
           </Grid.Column>
         </Grid>
       </Segment>

@@ -4,7 +4,7 @@ import { useAppSelector } from "../../../App/store/store";
 import { Controller, FieldValues, useForm } from "react-hook-form";
 import { categoryOptions } from "./categoryOption";
 import { AppEvent } from "../../../App/types/events";
-import { Timestamp } from "firebase/firestore";
+import { Timestamp, arrayUnion } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { useFirestore } from "../../../App/hooks/firestore/useFirestore";
 import { useEffect } from "react";
@@ -29,13 +29,14 @@ export default function EventForm() {
       if (event) return { ...event, date: new Date(event.date) };
     },
   });
-
+  
   const { id } = useParams();
   const event = useAppSelector((state) =>
-    state.events.data.find((event) => event.id === id)
+  state.events.data.find((event) => event.id === id)
   );
   const { status } = useAppSelector((state) => state.events);
-
+  const { currentUser } = useAppSelector((state) => state.auth);
+  
   const navigate = useNavigate();
 
   //using loadDocument to read the change of signle document.
@@ -56,11 +57,20 @@ export default function EventForm() {
   }
   //using create function in useFireStore hook
   async function createEvent(data: FieldValues) {
+    if (!currentUser) return;
+    //update data
     const ref = await create({
       ...data,
-      hostedBy: "bod",
-      attendees: [],
-      hostPhotoURL: "",
+      hostUid: currentUser.uid,
+      hostedBy: currentUser.displayName,
+      hostPhotoURL: currentUser.photoURL,
+
+      attendees: arrayUnion({
+        id: currentUser.uid,
+        displayName: currentUser.displayName,
+        photoURL: currentUser.photoURL,
+      }),
+      attendeeIds: arrayUnion(currentUser.uid),
       date: Timestamp.fromDate(data.date as unknown as Date),
     });
     return ref;

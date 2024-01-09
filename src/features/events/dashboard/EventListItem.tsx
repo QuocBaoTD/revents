@@ -15,6 +15,7 @@ import { AppEvent } from "../../../App/types/events";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../../App/store/store";
 import Spinner from "../../../App/layout/Spinner";
+import { format } from "date-fns";
 
 type Props = {
   event: AppEvent;
@@ -39,9 +40,14 @@ export default function EventListItem({ event }: Props) {
             <ItemContent>
               <Item.Header>{event.title}</Item.Header>
               <ItemDescription>Hosted by {event.hostedBy}</ItemDescription>
-              
+
               {event.isCancelled && (
-                <Label style={{ top: "-40px" }} ribbon="right" color="red" content="This event has been cancelled" /> //announce event is cancelled
+                <Label
+                  style={{ top: "-40px" }}
+                  ribbon="right"
+                  color="red"
+                  content="This event has been cancelled"
+                /> //announce event is cancelled
               )}
             </ItemContent>
           </Item>
@@ -51,7 +57,7 @@ export default function EventListItem({ event }: Props) {
       <Segment>
         <span>
           <Icon name="clock" />
-          {event.date}
+          {format(new Date(event.date), "dd/ MM/ yyyy, h:mm a")}
           <Icon name="marker" />
           {event.venue}
         </span>
@@ -71,12 +77,6 @@ export default function EventListItem({ event }: Props) {
           content="view"
           as={Link}
           to={`/events/${event.id}`}
-        />
-        <Button
-          color="red"
-          floated="right"
-          content="Delete"
-          //adding fucntion remove of useFireStore hook.
         />
       </Segment>
     </SegmentGroup>

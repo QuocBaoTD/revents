@@ -35,10 +35,10 @@ export default function EventDetailPage() {
       <GridColumn width={10}>
         <EventDetailHeader event={event} />
         <EventDetailInfor event={event} />
-        <EventDetailChat />
+        <EventDetailChat eventId={event.id}/>
       </GridColumn>
       <GridColumn width={6}>
-        <EventDetailSideBar />
+        <EventDetailSideBar event={event} />
       </GridColumn>
     </Grid>
   );

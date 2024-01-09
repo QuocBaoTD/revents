@@ -25,13 +25,19 @@ function SignInMenu() {
             text="Create event"
             icon="plus"
           />
-          <DropdownItem text="My profile" icon="user" />
+          <DropdownItem
+            as={Link}
+            to={`profiles/${currentUser?.uid}`}
+            text="My profile"
+            icon="user"
+          />
           <DropdownItem
             as={Link}
             to="/account"
             text="My account"
             icon="setting"
           />
+
           <DropdownItem onClick={handleSignOut} text="Sign out" icon="power" />
         </Dropdown.Menu>
       </Dropdown>
