@@ -1,12 +1,13 @@
 import { Divider, Form, Label } from "semantic-ui-react";
 import ModalWrapper from "../../App/common/modal/ModalWrapper";
 import { FieldValues, useForm } from "react-hook-form";
-import { useAppDispatch } from "../../App/store/store";
+import { useAppDispatch, useAppSelector } from "../../App/store/store";
 import { closeModal } from "../../App/common/modal/modalSlice";
 import { Button, FormInput } from "semantic-ui-react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../App/config/firebase";
 import SocialLogin from "./SocialLogin";
+import { useNavigate } from "react-router-dom";
 
 //https://regexlib.com/Search.aspx?k=email to take validation email
 
@@ -19,13 +20,15 @@ function LoginForm() {
   } = useForm({
     mode: "onTouched",
   });
-
+  const navigate = useNavigate();
+  const { data: location } = useAppSelector((state) => state.modals);
   const dispatch = useAppDispatch();
 
   async function onSubmit(data: FieldValues) {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password);
       dispatch(closeModal());
+      navigate(location.from); //to get to the page which previous access for the user not login before.
     } catch (error: any) {
       setError("root.serverError", {
         type: "400",
@@ -77,7 +80,7 @@ function LoginForm() {
         />
 
         <Divider horizontal>Or</Divider>
-        <SocialLogin/>
+        <SocialLogin />
       </Form>
     </ModalWrapper>
   );

@@ -5,11 +5,13 @@ import { User } from "firebase/auth";
 type State = {
   authenticated: boolean;
   currentUser: AppUser | null;
+  initialised: boolean;
 };
 
 const initialState: State = {
   authenticated: false,
   currentUser: null,
+  initialised: false,
 };
 
 export const authSlice = createSlice({
@@ -20,6 +22,7 @@ export const authSlice = createSlice({
       //shaping data to cofig with data in fireStore.
       reducer: (state, action: PayloadAction<AppUser>) => {
         state.authenticated = true;
+        state.initialised = true;
         state.currentUser = action.payload;
       },
       prepare: (user: User) => {
@@ -30,13 +33,14 @@ export const authSlice = createSlice({
           displayName: user.displayName,
           providerId: user.providerData[0].providerId,
         };
-        return {payload: mapped}
+        return { payload: mapped };
       },
     },
 
     logOut: (state) => {
       state.authenticated = false;
       state.currentUser = null;
+      state.initialised = true;
     },
   },
 });

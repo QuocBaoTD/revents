@@ -6,6 +6,7 @@ import { modalSlice } from "../common/modal/modalSlice";
 import { authSlice } from "../../features/auth/authSlice";
 import { profileSlice } from "../../features/profiles/profileSlice";
 import { photoSlice } from "../../features/profiles/photoSlice";
+import { followSlice } from "../../features/profiles/follow/followSlice";
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     auth: authSlice.reducer,
     profiles: profileSlice.reducer,
     photos: photoSlice.reducer,
+    follow: followSlice.reducer,
   },
 });
 

@@ -26,6 +26,7 @@ function ProfileEvent({ profile }: Props) {
       { attribute: "date", operator: ">=", value: new Date() },
     ],
     sort: { attribute: "date", order: "asc" },
+    reset: true,
   };
 
   const [options, setOptions] = useState<CollectionOptions>(intialOption);
@@ -44,6 +45,7 @@ function ProfileEvent({ profile }: Props) {
           { attribute: "date", operator: "<", value: new Date() },
         ];
         options.sort = { attribute: "date", order: "desc" };
+        options.reset = true;
         break;
       case 2: // hosted
         options.queries = [
@@ -54,9 +56,11 @@ function ProfileEvent({ profile }: Props) {
           },
         ];
         options.sort = { attribute: "date", order: "asc" };
+        options.reset = true;
         break;
       default:
         options = intialOption;
+        options.reset = true;
         break;
     }
     setOptions(options);
@@ -84,7 +88,6 @@ function ProfileEvent({ profile }: Props) {
     },
   ];
 
-
   return (
     <Tab.Pane loading={status === "loading"}>
       <Grid>
@@ -93,7 +96,9 @@ function ProfileEvent({ profile }: Props) {
         </Grid.Column>
         <Grid.Column width={16}>
           <Tab
-            onTabChange={(_e, data) => handleSetQueries(data.activeIndex as number)} // add the function hanlde event for button
+            onTabChange={(_e, data) =>
+              handleSetQueries(data.activeIndex as number)
+            } // add the function hanlde event for button
             panes={panes}
             menu={{ secondary: true, pointing: true }}
           />
@@ -107,7 +112,9 @@ function ProfileEvent({ profile }: Props) {
                 <Card.Content>
                   <Card.Header content={event.title} textAlign="center" />
                   <Card.Meta textAlign="center">
-                    <span>{format(new Date(event.date), "dd/ MM/ yyyy, h:mm a")}</span>
+                    <span>
+                      {format(new Date(event.date), "dd/ MM/ yyyy, h:mm a")}
+                    </span>
                   </Card.Meta>
                 </Card.Content>
               </Card>

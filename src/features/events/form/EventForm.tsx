@@ -53,6 +53,7 @@ export default function EventForm() {
     await update(data.id, {
       ...data,
       date: Timestamp.fromDate(data.date as unknown as Date),
+      
     });
   }
   //using create function in useFireStore hook
@@ -72,6 +73,7 @@ export default function EventForm() {
       }),
       attendeeIds: arrayUnion(currentUser.uid),
       date: Timestamp.fromDate(data.date as unknown as Date),
+      
     });
     return ref;
   }

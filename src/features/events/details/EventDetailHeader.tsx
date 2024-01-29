@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Button,
   Header,
@@ -11,7 +11,6 @@ import {
 } from "semantic-ui-react";
 import { AppEvent } from "../../../App/types/events";
 import { useAppSelector } from "../../../App/store/store";
-import { toast } from "react-toastify";
 import { useState } from "react";
 import { useFirestore } from "../../../App/hooks/firestore/useFirestore";
 import { arrayRemove, arrayUnion } from "firebase/firestore";
@@ -29,6 +28,8 @@ function EventDetailHeader({ event }: Props) {
   const { currentUser } = useAppSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const { update } = useFirestore("events");
+  const navigate = useNavigate();
+  const location = useLocation()
 
   const styledEventText = {
     position: "absolute",
@@ -40,10 +41,7 @@ function EventDetailHeader({ event }: Props) {
   };
   //adding join and remove attendance
   async function toggleAttendance() {
-    if (!currentUser) {
-      toast.error("Must be logged in to do this");
-      return;
-    }
+    if (!currentUser) return navigate("/unauthorised", {state: {from: location.pathname}}) //leading the user to unauthorizaed page
     setLoading(true);
 
     if (event.isGoing) {

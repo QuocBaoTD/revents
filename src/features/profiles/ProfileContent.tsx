@@ -3,12 +3,16 @@ import ProfileAbout from "./ProfileAbout";
 import { Profile } from "../../App/types/profile";
 import ProfilePhoto from "./ProfilePhoto";
 import ProfileEvent from "./ProfileEvent";
+import FollowTab from "./follow/FollowTab";
+import { useState } from "react";
 
 type Props = {
   profile: Profile;
 };
 
 function ProfileContent({ profile }: Props) {
+    const [activeTab, setActiveTab] = useState(0);
+
   const panes = [
     {
       menuItem: "About",
@@ -20,15 +24,15 @@ function ProfileContent({ profile }: Props) {
     },
     {
       menuItem: "Events",
-      render: () => <ProfileEvent profile={profile}/>,
+      render: () => <ProfileEvent profile={profile} />,
     },
     {
       menuItem: "Followers",
-      render: () => <Tab.Pane>Followers</Tab.Pane>,
+      render: () => <FollowTab profileId={profile.id} activeTab={activeTab}/>,
     },
     {
       menuItem: "Following",
-      render: () => <Tab.Pane>Following</Tab.Pane>,
+      render: () => <FollowTab profileId={profile.id} activeTab={activeTab}/>,
     },
   ];
 
@@ -37,6 +41,7 @@ function ProfileContent({ profile }: Props) {
       menu={{ fluid: true, vertical: true }}
       menuPosition="right"
       panes={panes}
+      onTabChange={(_e, data) => setActiveTab(data.activeIndex as number)}
     />
   );
 }

@@ -1,8 +1,22 @@
-import { Query, collection, orderBy, query, where } from "firebase/firestore";
+import {
+  Query,
+  QueryDocumentSnapshot,
+  collection,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+  where,
+} from "firebase/firestore";
 import { CollectionOptions } from "./types";
 import { db } from "../../config/firebase";
+import { MutableRefObject } from "react";
 
-export const getQuery = function (path: string, options?: CollectionOptions) {
+export const getQuery = function (
+  path: string,
+  options?: CollectionOptions,
+  lastDocRef?: MutableRefObject<QueryDocumentSnapshot | null>
+) {
   let q = collection(db, path) as Query;
 
   if (options && options.queries) {
@@ -14,6 +28,14 @@ export const getQuery = function (path: string, options?: CollectionOptions) {
   if (options && options.sort) {
     const { attribute, order } = options.sort;
     q = query(q, orderBy(attribute, order));
+  }
+  //handle for "lasDocRef"
+  if (options && options.limit) {
+    q = query(q, limit(options.limit));
+  }
+
+  if (options && options.pagination) {
+    q = query(q, startAfter(lastDocRef?.current))
   }
 
   return q;

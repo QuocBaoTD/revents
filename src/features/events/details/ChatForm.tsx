@@ -4,6 +4,8 @@ import { FieldValues, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Form, Loader } from "semantic-ui-react";
 import { auth, fb } from "../../../App/config/firebase";
+import { useAppSelector } from "../../../App/store/store";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   eventId: string;
@@ -25,7 +27,13 @@ function ChatForm({ eventId, parentId, setReplyForm }: Props) {
     },
   });
 
+  const { authenticated } = useAppSelector((state) => state.auth);
+  const navigate = useNavigate();
+
   async function onSubmit(data: FieldValues) {
+    if (!authenticated) {
+      return navigate("/unauthorised", { state: { from: location.pathname } }); //leading user to unauthorized page if they do not register
+    }
     //handle data with firebase
     try {
       const chatRef = ref(fb, `chat/${eventId}`);

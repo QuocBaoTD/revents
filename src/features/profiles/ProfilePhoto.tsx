@@ -9,6 +9,7 @@ import { actions } from "./photoSlice";
 import { updateProfile } from "firebase/auth";
 import { deleteObject, ref } from "firebase/storage";
 import { toast } from "react-toastify";
+import { batchSetPhoto } from "../../App/actions/firestoreAction";
 
 type Props = {
   profile: Profile;
@@ -21,7 +22,6 @@ function ProfilePhoto({ profile }: Props) {
   const { loadCollection, remove } = useFirestore(
     `profiles/${profile.id}/photos`
   );
-  const { update } = useFirestore("profiles");
 
   // read real time  update photo
   useEffect(() => {
@@ -29,10 +29,8 @@ function ProfilePhoto({ profile }: Props) {
   }, [loadCollection]);
 
   async function handleSelecMain(photo: Photo) {
-    await update(profile.id, {
-      photoURL: photo.url,
-    });
-
+    await batchSetPhoto(photo.url) //use batchSetPhoto to make the image photo in profile config with image in event
+  
     await updateProfile(auth.currentUser!, {
       photoURL: photo.url,
     });

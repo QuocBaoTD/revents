@@ -10,9 +10,10 @@ import {
 } from "@reduxjs/toolkit";
 
 export type GenericState<T> = {
-  data: T;
+  data: T | [];
   status: "loading" | "finished" | "error";
   errors?: any;
+  loadedInitial?: boolean; //add more loading for the event for button load more
 };
 
 export const createGenericSlice = <
@@ -42,13 +43,20 @@ export const createGenericSlice = <
         state.errors = action.payload;
         state.status = "error";
       },
+      reset: (state) => {
+        state.data = []; //set reset data is empty to fix the paginate to remove listing data.
+        state.loadedInitial = false;
+      },
       ...reducers,
     },
   });
 };
 
 export type GenericActions<T> = {
+  reset: any;
   loading: ActionCreatorWithoutPayload<string>;
-  success: ActionCreatorWithPayload<T,string> | ActionCreatorWithPreparedPayload<any, T, string, never, never>;
+  success:
+    | ActionCreatorWithPayload<T, string>
+    | ActionCreatorWithPreparedPayload<any, T, string, never, never>;
   error: ActionCreatorWithOptionalPayload<any, string>;
 };
