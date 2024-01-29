@@ -1,4 +1,4 @@
-import { Grid, GridColumn } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 import EventList from "./EventList";
 import { useAppDispatch, useAppSelector } from "../../../App/store/store";
 import { useCallback, useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { useFirestore } from "../../../App/hooks/firestore/useFirestore";
 import EventFilter from "./EventFilter";
 import { QueryOptions } from "../../../App/hooks/firestore/types";
 import EventListItemPlaceholder from "./EventListItemPlaceholder";
+import EmptyState from "../../../App/layout/nav/EmptyState";
 
 function EventDashBoard() {
   const dispatch = useAppDispatch();
@@ -52,7 +53,7 @@ function EventDashBoard() {
 
   return (
     <Grid>
-      <GridColumn width={10}>
+      <Grid.Column width={10}>
         {!loadedInitial ? (
           <>
             <EventListItemPlaceholder />
@@ -60,12 +61,16 @@ function EventDashBoard() {
           </>
         ) : (
           <>
-            <EventList
-              events={events}
-              hasMore={hasMore.current}
-              loadMore={loadMore}
-              loading={status === "loading"} //pass the boolean to check loading
-            />
+            {events.length === 0 ? (
+              <EmptyState />
+            ) : (
+              <EventList
+                events={events}
+                hasMore={hasMore.current}
+                loadMore={loadMore}
+                loading={status === "loading"} //pass the boolean to check loading
+              />
+            )}
             {/* <Button
               disabled={!hasMore.current} //it is the ref so we use current
               content="Load more"
@@ -75,15 +80,15 @@ function EventDashBoard() {
             /> */}
           </>
         )}
-      </GridColumn>
-      <GridColumn width={6}>
+      </Grid.Column>
+      <Grid.Column width={6}>
         <div
           className="ui fixed top sticky" //adding stick for the filter event
           style={{ top: 98, width: 405, zIndex: 1 }}
         >
           <EventFilter setQuery={setQuery} />
         </div>
-      </GridColumn>
+      </Grid.Column>
     </Grid>
   );
 }
